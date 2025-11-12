@@ -1,0 +1,268 @@
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    touch-action: manipulation;
+}
+
+/* 防止移动端双击缩放 */
+button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 自定义动画 */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 餐品卡片样式 */
+.food-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 1rem;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    animation: slideInUp 0.5s ease;
+}
+
+.food-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.food-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.food-card:hover::before {
+    left: 100%;
+}
+
+.food-card .emoji {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.food-card .name {
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.food-card .delete-btn {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+    font-size: 0.75rem;
+}
+
+.food-card:hover .delete-btn {
+    opacity: 1;
+}
+
+.food-card .delete-btn:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* 渐变背景色变化 */
+.food-card:nth-child(6n+1) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.food-card:nth-child(6n+2) {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.food-card:nth-child(6n+3) {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.food-card:nth-child(6n+4) {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.food-card:nth-child(6n+5) {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.food-card:nth-child(6n+6) {
+    background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+}
+
+/* 弹窗动画 */
+#addModal.show {
+    display: flex !important;
+    animation: fadeIn 0.3s ease;
+}
+
+#addModal.show > div {
+    animation: scaleIn 0.3s ease;
+}
+
+/* 表情按钮选中状态 */
+.emoji-btn.selected {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transform: scale(1.2);
+}
+
+/* 结果区域动画 */
+#resultSection.show {
+    display: block !important;
+    animation: scaleIn 0.5s ease;
+}
+
+/* 旋转动画 */
+.spinning {
+    animation: spin 0.5s linear;
+}
+
+/* 抖动动画 */
+.shaking {
+    animation: shake 0.5s ease;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* 移动端优化 */
+@media (max-width: 640px) {
+    .food-card .emoji {
+        font-size: 2rem;
+    }
+    
+    .food-card .name {
+        font-size: 0.85rem;
+    }
+}
+
+/* 输入框焦点效果 */
+input:focus {
+    box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.1);
+}
+
+/* 按钮点击效果 */
+button:active {
+    transform: scale(0.95);
+}
+
+/* 空状态动画 */
+#emptyState {
+    animation: fadeIn 0.5s ease;
+}
+
+/* 预设按钮悬停效果 */
+.preset-btn:active {
+    transform: scale(0.95) !important;
+}
+
+/* 加载动画 */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

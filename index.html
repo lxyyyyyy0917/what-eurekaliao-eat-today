@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="今天吃什么">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#fb923c">
+    <meta name="description" content="帮助选择困难症决定午餐吃什么的可爱小助手">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- iOS 图标 -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🍱</text></svg>">
+    
+    <title>eurekaliao今天吃什么？</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 min-h-screen">
+    <!-- 主容器 -->
+    <div class="container mx-auto px-4 py-6 max-w-md">
+        <!-- 头部 -->
+        <header class="text-center mb-8">
+            <div class="inline-block bg-white rounded-full p-4 shadow-lg mb-4 animate-bounce">
+                <span class="text-5xl">🍱</span>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">eurekaliao今天吃什么？💕</h1>
+            <p class="text-gray-600">让我帮你决定今天吃什么！</p>
+        </header>
+
+        <!-- 结果展示区 -->
+        <div id="resultSection" class="hidden mb-8">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 text-center transform transition-all duration-500">
+                <div class="mb-4">
+                    <span id="resultEmoji" class="text-7xl inline-block animate-pulse">🎉</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">今天就吃</h2>
+                <p id="resultText" class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-pink-500 mb-6"></p>
+                <button id="rerollBtn" class="bg-gradient-to-r from-orange-400 to-pink-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                    🎲 再选一次
+                </button>
+            </div>
+        </div>
+
+        <!-- 开始按钮 -->
+        <div id="startSection" class="mb-8">
+            <button id="startBtn" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 text-white py-6 rounded-3xl font-bold text-2xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 active:scale-95">
+                🎯 开始选择
+            </button>
+        </div>
+
+        <!-- 餐品列表 -->
+        <div class="bg-white rounded-3xl shadow-xl p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">我的餐品列表</h3>
+                <button id="addBtn" class="bg-gradient-to-r from-green-400 to-blue-500 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                    ➕ 添加
+                </button>
+            </div>
+            
+            <!-- 餐品网格 -->
+            <div id="foodList" class="grid grid-cols-2 gap-3 mb-4"></div>
+            
+            <!-- 空状态提示 -->
+            <div id="emptyState" class="hidden text-center py-8">
+                <span class="text-6xl mb-4 inline-block">🍽️</span>
+                <p class="text-gray-500">还没有添加餐品哦</p>
+                <p class="text-gray-400 text-sm mt-2">点击上方"添加"按钮开始吧</p>
+            </div>
+        </div>
+
+        <!-- 预设餐品推荐 -->
+        <div class="bg-white rounded-3xl shadow-xl p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">快速添加</h3>
+            <div class="flex flex-wrap gap-2">
+                <button class="preset-btn bg-gradient-to-r from-red-100 to-red-200 text-red-700 px-4 py-2 rounded-full text-sm font-semibold hover:shadow-md transform hover:scale-105 transition-all duration-300" data-food="火锅" data-emoji="🍲">
+                    🍲 火锅
+                </button>
+                <button class="preset-btn bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-700 px-4 py-2 rounded-full text-sm font-semibold hover:shadow-md transform hover:scale-105 transition-all duration-300" data-food="麻辣烫" data-emoji="🌶️">
+                    🌶️ 麻辣烫
+                </button>
+                <button class="preset-btn bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 px-4 py-2 rounded-full text-sm font-semibold hover:shadow-md transform hover:scale-105 transition-all duration-300" data-food="炸鸡" data-emoji="🍗">
+                    🍗 炸鸡
+                </button>
+                <button class="preset-btn bg-gradient-to-r from-green-100 to-green-200 text-green-700 px-4 py-2 rounded-full text-sm font-semibold hover:shadow-md transform hover:scale-105 transition-all duration-300" data-food="沙拉" data-emoji="🥗">
+                    🥗 沙拉
+                </button>
+                <button class="preset-btn bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold hover:shadow-md transform hover:scale-105 transition-all duration-300" data-food="寿司" data-emoji="🍣">
+                    🍣 寿司
+                </button>
+                <button class="preset-btn bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 px-4 py-2 rounded-full text-sm font-semibold hover:shadow-md transform hover:scale-105 transition-all duration-300" data-food="拉面" data-emoji="🍜">
+                    🍜 拉面
+                </button>
+                <button class="preset-btn bg-gradient-to-r from-pink-100 to-pink-200 text-pink-700 px-4 py-2 rounded-full text-sm font-semibold hover:shadow-md transform hover:scale-105 transition-all duration-300" data-food="汉堡" data-emoji="🍔">
+                    🍔 汉堡
+                </button>
+                <button class="preset-btn bg-gradient-to-r from-indigo-100 to-indigo-200 text-indigo-700 px-4 py-2 rounded-full text-sm font-semibold hover:shadow-md transform hover:scale-105 transition-all duration-300" data-food="披萨" data-emoji="🍕">
+                    🍕 披萨
+                </button>
+                <button class="preset-btn bg-gradient-to-r from-red-100 to-red-200 text-red-700 px-4 py-2 rounded-full text-sm font-semibold hover:shadow-md transform hover:scale-105 transition-all duration-300" data-food="烤肉" data-emoji="🥩">
+                    🥩 烤肉
+                </button>
+                <button class="preset-btn bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-700 px-4 py-2 rounded-full text-sm font-semibold hover:shadow-md transform hover:scale-105 transition-all duration-300" data-food="盖浇饭" data-emoji="🍛">
+                    🍛 盖浇饭
+                </button>
+                <button class="preset-btn bg-gradient-to-r from-green-100 to-green-200 text-green-700 px-4 py-2 rounded-full text-sm font-semibold hover:shadow-md transform hover:scale-105 transition-all duration-300" data-food="炒面" data-emoji="🍝">
+                    🍝 炒面
+                </button>
+                <button class="preset-btn bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 px-4 py-2 rounded-full text-sm font-semibold hover:shadow-md transform hover:scale-105 transition-all duration-300" data-food="饺子" data-emoji="🥟">
+                    🥟 饺子
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加餐品弹窗 -->
+    <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full transform transition-all duration-300 scale-95">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">添加新餐品</h3>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">选择表情</label>
+                <div class="grid grid-cols-6 gap-2 mb-4">
+                    <button class="emoji-btn text-3xl p-2 hover:bg-gray-100 rounded-lg transition-all duration-200" data-emoji="🍱">🍱</button>
+                    <button class="emoji-btn text-3xl p-2 hover:bg-gray-100 rounded-lg transition-all duration-200" data-emoji="🍜">🍜</button>
+                    <button class="emoji-btn text-3xl p-2 hover:bg-gray-100 rounded-lg transition-all duration-200" data-emoji="🍕">🍕</button>
+                    <button class="emoji-btn text-3xl p-2 hover:bg-gray-100 rounded-lg transition-all duration-200" data-emoji="🍔">🍔</button>
+                    <button class="emoji-btn text-3xl p-2 hover:bg-gray-100 rounded-lg transition-all duration-200" data-emoji="🍗">🍗</button>
+                    <button class="emoji-btn text-3xl p-2 hover:bg-gray-100 rounded-lg transition-all duration-200" data-emoji="🍣">🍣</button>
+                    <button class="emoji-btn text-3xl p-2 hover:bg-gray-100 rounded-lg transition-all duration-200" data-emoji="🍲">🍲</button>
+                    <button class="emoji-btn text-3xl p-2 hover:bg-gray-100 rounded-lg transition-all duration-200" data-emoji="🥗">🥗</button>
+                    <button class="emoji-btn text-3xl p-2 hover:bg-gray-100 rounded-lg transition-all duration-200" data-emoji="🌮">🌮</button>
+                    <button class="emoji-btn text-3xl p-2 hover:bg-gray-100 rounded-lg transition-all duration-200" data-emoji="🌯">🌯</button>
+                    <button class="emoji-btn text-3xl p-2 hover:bg-gray-100 rounded-lg transition-all duration-200" data-emoji="🥙">🥙</button>
+                    <button class="emoji-btn text-3xl p-2 hover:bg-gray-100 rounded-lg transition-all duration-200" data-emoji="🍝">🍝</button>
+                </div>
+                <div id="selectedEmoji" class="text-5xl text-center mb-4">🍱</div>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2">餐品名称</label>
+                <input type="text" id="foodNameInput" placeholder="例如：黄焖鸡米饭" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-400 focus:outline-none transition-all duration-300" maxlength="10">
+            </div>
+            
+            <div class="flex gap-3">
+                <button id="cancelBtn" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-300">
+                    取消
+                </button>
+                <button id="confirmBtn" class="flex-1 bg-gradient-to-r from-orange-500 to-pink-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+    
+    <!-- 注册 Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker 注册成功:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker 注册失败:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
