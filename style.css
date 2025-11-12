@@ -222,6 +222,96 @@ button {
     background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
+/* 转盘样式 */
+.wheel-container {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    margin: 0 auto;
+}
+
+.wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+}
+
+.wheel-item {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    transform-origin: 100% 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.wheel-item .emoji {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.wheel-item .name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    word-break: break-all;
+}
+
+.wheel-pointer {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 30px solid #ef4444;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    z-index: 10;
+}
+
+.wheel-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 5;
+    border: 4px solid white;
+}
+
+.wheel.spinning {
+    animation: none;
+}
+
+@keyframes wheelSpin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(var(--spin-degree));
+    }
+}
+
 /* 移动端优化 */
 @media (max-width: 640px) {
     .food-card .emoji {
@@ -230,6 +320,19 @@ button {
     
     .food-card .name {
         font-size: 0.85rem;
+    }
+    
+    .wheel-container {
+        width: 280px;
+        height: 280px;
+    }
+    
+    .wheel-item .emoji {
+        font-size: 1.5rem;
+    }
+    
+    .wheel-item .name {
+        font-size: 0.65rem;
     }
 }
 
