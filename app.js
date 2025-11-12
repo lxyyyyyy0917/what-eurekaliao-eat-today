@@ -143,6 +143,57 @@ class LunchApp {
                 });
             });
         }
+
+        // 渲染转盘
+        this.renderWheel();
+    }
+
+    // 渲染转盘
+    renderWheel() {
+        const wheelContainer = document.getElementById('wheelContainer');
+        if (!wheelContainer) return;
+
+        if (this.foods.length === 0) {
+            wheelContainer.innerHTML = '<div class="text-center text-gray-500 py-8">请先添加餐品</div>';
+            return;
+        }
+
+        const itemCount = this.foods.length;
+        const anglePerItem = 360 / itemCount;
+        
+        // 生成渐变色
+        const colors = [
+            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+            'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+            'linear-gradient(135deg, #30cfd0 0%, #330867 100%)'
+        ];
+
+        const wheelHTML = `
+            <div class="wheel-pointer"></div>
+            <div class="wheel" id="wheel">
+                ${this.foods.map((food, index) => {
+                    const rotation = anglePerItem * index;
+                    const colorIndex = index % colors.length;
+                    return `
+                        <div class="wheel-item" style="
+                            transform: rotate(${rotation}deg) skewY(${-90 + anglePerItem}deg);
+                            background: ${colors[colorIndex]};
+                        ">
+                            <div style="transform: skewY(${90 - anglePerItem}deg) rotate(${anglePerItem / 2}deg);">
+                                <span class="emoji">${food.emoji}</span>
+                                <span class="name">${food.name}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+                <div class="wheel-center">🎯</div>
+            </div>
+        `;
+
+        wheelContainer.innerHTML = wheelHTML;
     }
 
     // 开始选择
@@ -152,28 +203,40 @@ class LunchApp {
             return;
         }
 
-        const startSection = document.getElementById('startSection');
+        const wheel = document.getElementById('wheel');
+        const startBtn = document.getElementById('startBtn');
         const resultSection = document.getElementById('resultSection');
         const resultText = document.getElementById('resultText');
         const resultEmoji = document.getElementById('resultEmoji');
 
-        if (!startSection || !resultSection || !resultText || !resultEmoji) return;
+        if (!wheel || !startBtn || !resultSection || !resultText || !resultEmoji) return;
 
-        // 添加旋转动画
-        resultEmoji.classList.add('spinning');
+        // 禁用按钮
+        startBtn.disabled = true;
+        startBtn.classList.add('opacity-50', 'cursor-not-allowed');
 
         // 随机选择
-        setTimeout(() => {
-            const randomIndex = Math.floor(Math.random() * this.foods.length);
-            const selectedFood = this.foods[randomIndex];
+        const randomIndex = Math.floor(Math.random() * this.foods.length);
+        const selectedFood = this.foods[randomIndex];
 
+        // 计算旋转角度
+        const itemCount = this.foods.length;
+        const anglePerItem = 360 / itemCount;
+        const baseRotation = 360 * 5; // 至少转5圈
+        const targetAngle = anglePerItem * randomIndex;
+        const finalRotation = baseRotation + (360 - targetAngle) + (anglePerItem / 2);
+
+        // 应用旋转动画
+        wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+        wheel.style.transform = `rotate(${finalRotation}deg)`;
+
+        // 动画结束后显示结果
+        setTimeout(() => {
             if (selectedFood) {
                 resultText.textContent = selectedFood.name;
                 resultEmoji.textContent = selectedFood.emoji;
-                resultEmoji.classList.remove('spinning');
                 
                 // 显示结果
-                startSection.classList.add('hidden');
                 resultSection.classList.remove('hidden');
                 resultSection.classList.add('show');
 
@@ -184,8 +247,16 @@ class LunchApp {
                         resultEmoji.classList.remove('shaking');
                     }, 500);
                 }, 100);
+
+                // 重置转盘
+                setTimeout(() => {
+                    wheel.style.transition = 'none';
+                    wheel.style.transform = 'rotate(0deg)';
+                    startBtn.disabled = false;
+                    startBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }, 1000);
             }
-        }, 500);
+        }, 4000);
     }
 
     // 打开添加弹窗
